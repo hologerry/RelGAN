@@ -1,9 +1,9 @@
-import tensorflow as tf
-from keras.engine import Layer, InputSpec
-from keras import initializers
-from keras import regularizers
-from keras import constraints
+# import tensorflow as tf
 from keras import backend as K
+from keras import constraints, initializers, regularizers
+from keras.engine import InputSpec, Layer
+# from keras.layers import BatchNormalization
+
 
 class GroupNormalization(Layer):
     """Group normalization layer
@@ -174,8 +174,7 @@ class GroupNormalization(Layer):
 
     def compute_output_shape(self, input_shape):
         return input_shape
-    
-from keras.layers import BatchNormalization
+
 
 class SwitchNormalization(Layer):
     """Switchable Normalization layer
@@ -452,7 +451,8 @@ class SwitchNormalization(Layer):
 
     def compute_output_shape(self, input_shape):
         return input_shape
-    
+
+
 class InstanceNormalization(Layer):
     """Instance normalization layer.
     Normalize the activations of the previous layer at each step,

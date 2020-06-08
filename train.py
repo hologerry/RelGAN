@@ -1,11 +1,18 @@
 # Copyright (C) 2019 Willy Po-Wei Wu & Elvis Yu-Jing Lin <maya6282@gmail.com, elvisyjlin@gmail.com>
-# 
+#
 # This work is licensed under the Creative Commons Attribution-NonCommercial
 # 4.0 International License. To view a copy of this license, visit
 # http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to
 # Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 import argparse
+import os
+
+import tensorflow as tf
+from keras.backend.tensorflow_backend import set_session
+
+from relgan import Relgan
+
 parser = argparse.ArgumentParser()
 parser.add_argument("-p", "--path", type=str, help="data path")
 parser.add_argument("-d", "--device", type=str, default='0', help="gpu device")
@@ -27,18 +34,9 @@ parser.add_argument("-v", "--vec_size", type=int, default=17)
 
 args = parser.parse_args()
 
-import os
-import sys
 
 os.environ["CUDA_VISIBLE_DEVICES"] = args.device
 
-import numpy as np
-
-import tensorflow as tf
-from keras import backend as K
-from keras.backend.tensorflow_backend import set_session
-
-from relgan import Relgan
 
 # K.set_floatx('float64')
 config = tf.ConfigProto()
