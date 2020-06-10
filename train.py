@@ -6,7 +6,7 @@
 # Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 import argparse
-import os
+# import os
 
 import tensorflow as tf
 from keras.backend.tensorflow_backend import set_session
@@ -14,7 +14,7 @@ from keras.backend.tensorflow_backend import set_session
 from relgan import Relgan
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-p", "--path", type=str, help="data path")
+parser.add_argument("-p", "--path", type=str, default='data/celeba-hq/celeba-256', help="data path")
 parser.add_argument("-d", "--device", type=str, default='0', help="gpu device")
 parser.add_argument("-g", "--growth", type=bool, default=False, help="allow_growth")
 parser.add_argument("-s", "--step", type=int, default=0, help="train_step")
@@ -35,7 +35,7 @@ parser.add_argument("-v", "--vec_size", type=int, default=17)
 args = parser.parse_args()
 
 
-os.environ["CUDA_VISIBLE_DEVICES"] = args.device
+# os.environ["CUDA_VISIBLE_DEVICES"] = args.device
 
 
 # K.set_floatx('float64')

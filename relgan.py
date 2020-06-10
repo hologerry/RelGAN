@@ -55,7 +55,17 @@ class Relgan():
         self.get_loss()
         self.get_optimizer()
         self.datagen = ImageDataGenerator(horizontal_flip=True)
-        self.writer = SummaryWriter()
+        experiment_name = 'original_relgan'
+        self.experiment_dir = os.path.join('experiments', 'RelGAN', experiment_name)
+        if not os.path.exists(self.experiment_dir):
+            os.makedirs(self.experiment_dir)
+        self.img_save_path = os.path.join(self.experiment_dir, 'img')
+        if not os.path.exists(self.img_save_path):
+            os.makedirs(self.img_save_path)
+        self.model_save_path = os.path.join(self.experiment_dir, 'model')
+        if not os.path.exists(self.model_save_path):
+            os.makedirs(self.model_save_path)
+        self.writer = SummaryWriter(self.experiment_dir)
 
     def get_model(self):
 
@@ -76,8 +86,8 @@ class Relgan():
         print(self.g_model.summary())
         print(self.d_model.summary())
 
-        plot_model(self.g_model, to_file='g_model.png')
-        plot_model(self.d_model, to_file='d_model.png')
+        plot_model(self.g_model, to_file=os.path.join(self.experiment_dir, 'g_model.png'))
+        plot_model(self.d_model, to_file=os.path.join(self.experiment_dir, 'd_model.png'))
 
     def get_loss(self):
 
@@ -246,10 +256,9 @@ class Relgan():
         return imgs, atts
 
     def train(self):
-
         print("load index")
-        imgIndex = np.load("imgIndex.npy")
-        imgAttr = np.load("anno_dic.npy").item()
+        imgIndex = np.load("RelGAN/imgIndex.npy")
+        imgAttr = np.load("RelGAN/anno_dic.npy").item()
         print("training")
 
         ite = self.step
@@ -341,12 +350,12 @@ class Relgan():
                         # image = image*255
                         image = image.astype(np.uint8)
                         new_im.paste(Image.fromarray(image, "RGB"), (self.sampleSize*ii, self.sampleSize*jj))
-                filename = "img/fakeFace%d.jpg" % (ite//200)
+                filename = os.path.join(self.img_save_path, "fakeFace%d.jpg" % (ite//200))
                 new_im.save(filename)
 
                 try:
-                    self.g_model.save("model/generator%d.h5" % (ite//200))
-                    self.d_model.save("model/discriminator.h5")
+                    self.g_model.save(os.path.join(self.model_save_path, "generator%d.h5" % (ite//200)))
+                    self.d_model.save(os.path.join(self.model_save_path, "discriminator%d.h5" % (ite//200)))
                 except Exception:
                     print('Pass save')
             ite = ite + 1
