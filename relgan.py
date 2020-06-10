@@ -244,7 +244,7 @@ class Relgan():
                 img_fa = imgIndex[temp_index]
             atts[i] = imgAttr[img_fa]
 
-            img = io.imread(os.path.join(self.path, f"{temp_index:06d}.jpg"))
+            img = io.imread(os.path.join(self.path, img_fa))
             imgs[i] = img/127.5-1
 
         imgs = np.array(imgs)
