@@ -49,11 +49,11 @@ print(len(annosAry["000001.jpg"]))
 np.save(args.output, annosAry)
 
 img_list = open('image_list.txt').readlines()
-imgIndex = []
+imgIndex = [None]*len(img_list)
 
 for i in range(1, len(img_list)):
     temp = str.split(img_list[i])
-    imgIndex.append(temp[2])
+    imgIndex[int(temp[0])] = temp[2]
 
 print(imgIndex[29999])
 
