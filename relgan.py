@@ -51,10 +51,6 @@ class Relgan():
         self.img_shape = (self.imgSize, self.imgSize, 3)
         self.vec_shape = (self.vecSize,)
 
-        self.get_model()
-        self.get_loss()
-        self.get_optimizer()
-        self.datagen = ImageDataGenerator(horizontal_flip=True)
         experiment_name = 'original_relgan'
         self.experiment_dir = os.path.join('experiments', 'RelGAN', experiment_name)
         if not os.path.exists(self.experiment_dir):
@@ -65,6 +61,11 @@ class Relgan():
         self.model_save_path = os.path.join(self.experiment_dir, 'model')
         if not os.path.exists(self.model_save_path):
             os.makedirs(self.model_save_path)
+
+        self.get_model()
+        self.get_loss()
+        self.get_optimizer()
+        self.datagen = ImageDataGenerator(horizontal_flip=True)
         self.writer = SummaryWriter(self.experiment_dir)
 
     def get_model(self):
