@@ -244,7 +244,7 @@ class Relgan():
                 img_fa = imgIndex[temp_index]
             atts[i] = imgAttr[img_fa]
 
-            img = io.imread(os.path.join(self.path, str(temp_index)+".jpg"))
+            img = io.imread(os.path.join(self.path, f"{temp_index:06d}.jpg"))
             imgs[i] = img/127.5-1
 
         imgs = np.array(imgs)
@@ -258,8 +258,8 @@ class Relgan():
 
     def train(self):
         print("load index")
-        imgIndex = np.load("RelGAN/imgIndex.npy")
-        imgAttr = np.load("RelGAN/anno_dic.npy").item()
+        imgIndex = np.load("RelGAN/imgIndex.npy", allow_pickle=True)
+        imgAttr = np.load("RelGAN/anno_dic.npy", allow_pickle=True).item()
         print("training")
 
         ite = self.step
