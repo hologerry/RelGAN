@@ -23,7 +23,7 @@ parser.add_argument("-b1", "--beta1", type=float, default=0.5)
 parser.add_argument("-b2", "--beta2", type=float, default=0.999)
 parser.add_argument("-batch", "--batch_size", type=int, default=4)
 parser.add_argument("-sample", "--sample_size", type=int, default=2)
-parser.add_argument("-ep", "--epochs", type=int, default=400000)
+parser.add_argument("-ep", "--epochs", type=int, default=400000)  # number of iterations
 parser.add_argument("-l1", "--lambda1", type=int, default=10)
 parser.add_argument("-l2", "--lambda2", type=int, default=10)
 parser.add_argument("-l4", "--lambda4", type=int, default=10)

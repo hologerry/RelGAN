@@ -53,7 +53,7 @@ def testPic(img, gender, bangs=-1, glasses=1):
     tempb = tempb*2 - 1
 
     # imgIndex = np.load("imgIndex.npy")
-# imgAttr = np.load("anno_dic.npy").item()
+    # imgAttr = np.load("anno_dic.npy").item()
 
     new_attrs = ['5_o_Clock_Shadow', 'Bald', 'Bangs', 'Black_Hair', 'Blond_Hair', 'Brown_Hair', 'Eyeglasses', 'Goatee',
                  'Gray_Hair', 'Male', 'Mustache', 'Pale_Skin', 'Smiling', 'Straight_Hair', 'Wavy_Hair', 'Wearing_Hat', 'Young']
@@ -184,22 +184,30 @@ relGan = Model(inputs=[imgA_input, vec_input_pos], outputs=g_out)
 relGan.load_weights(train_path)
 relGan.summary()
 
-lengh = 10
+lengh = 20
 temp = [None]*lengh
-temp[0] = testPic('test_img/j.png', 0)
-temp[1] = testPic('test_img/c.2.jpg', 0)
-temp[2] = testPic('test_img/es.png', 1)
-temp[3] = testPic('test_img/e.2.png', 1)
-temp[4] = testPic('test_img/g.2.png', 1)
-temp[5] = testPic('test_img/y3.png', 1)
-temp[6] = testPic('test_img/f1.png', 1, glasses=-1)
-temp[7] = testPic('test_img/j1.png', 0, glasses=-1)
-temp[8] = testPic('test_img/c3.png', 0)
-temp[9] = testPic('test_img/g3.png', 1, glasses=-1)
+celeba_test_imgs = open('celeba_test_img_list.txt', 'r').readlines()
+for i in range(lengh):
+    if i >= 10:
+        gls = -1
+    else:
+        gls = 1
+    temp[i] = testPic('test_img/' + celeba_test_imgs[i].strip(), i % 2, gls)
+
+# temp[0] = testPic('test_img/j.png', 0)
+# temp[1] = testPic('test_img/c.2.jpg', 0)
+# temp[2] = testPic('test_img/es.png', 1)
+# temp[3] = testPic('test_img/e.2.png', 1)
+# temp[4] = testPic('test_img/g.2.png', 1)
+# temp[5] = testPic('test_img/y3.png', 1)
+# temp[6] = testPic('test_img/f1.png', 1, glasses=-1)
+# temp[7] = testPic('test_img/j1.png', 0, glasses=-1)
+# temp[8] = testPic('test_img/c3.png', 0)
+# temp[9] = testPic('test_img/g3.png', 1, glasses=-1)
 
 new_im = Image.new('RGB', (256*10, 256*lengh))
 for jj in tqdm(range(lengh)):
     index = jj
     image = temp[index]
     new_im.paste(Image.fromarray(image, "RGB"), (0, 256*jj))
-new_im.save('test_v%04d.jpg' % version)
+new_im.save('results/celeba_test_v%04d.jpg' % version)

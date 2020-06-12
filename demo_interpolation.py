@@ -68,17 +68,17 @@ def testPic(img, gender, bangs=-1, glasses=1):
     for i in range(0, 21):
         temp = np.zeros([17])
 
-        temp[new_attrs.index('Smiling')] = 0.05 * i
-        # temp[new_attrs.index('Gray_Hair')] = 0.07* i
-        # temp[new_attrs.index('Young')] = -0.07* i
+        # temp[new_attrs.index('Smiling')] = 0.05 * i
+        # temp[new_attrs.index('Gray_Hair')] = 0.07 * i
+        temp[new_attrs.index('Young')] = -0.07 * i
         attr.append(temp)
 
     for i in range(21, 0, -1):
         temp = np.zeros([17])
 
-        temp[new_attrs.index('Smiling')] = 0.05 * i
-        # temp[new_attrs.index('Gray_Hair')] = 0.07* i
-        # temp[new_attrs.index('Young')] = -0.07* i
+        # temp[new_attrs.index('Smiling')] = 0.05 * i
+        # temp[new_attrs.index('Gray_Hair')] = 0.07 * i
+        temp[new_attrs.index('Young')] = -0.07 * i
         attr.append(temp)
 
     for at in attr:
@@ -91,8 +91,8 @@ def testPic(img, gender, bangs=-1, glasses=1):
     output2 = np.tile(output, [len(attr), 1, 1, 1])
     outputs_, _ = relGan.predict([output2, attrs_pos])
     outputs_ = np.ndarray.astype((outputs_/2+0.5)*255, np.uint8)
-    imageio.mimsave('simple_'+args.output, outputs_[10:31])
-    imageio.mimsave(args.output, outputs_)
+    imageio.mimsave('results/Young_simple_'+args.output, outputs_[10:31])
+    imageio.mimsave('results/Young_'+args.output, outputs_)
 
 
 # temp3 = io.imread('/share/data/celeba-hq/celeba-256/12345.jpg')
