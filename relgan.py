@@ -51,8 +51,8 @@ class Relgan():
         self.img_shape = (self.imgSize, self.imgSize, 3)
         self.vec_shape = (self.vecSize,)
 
-        experiment_name = 'original_relgan'
-        self.experiment_dir = os.path.join('experiments', 'RelGAN', experiment_name)
+        experiment_name = 'original_relgan_mask_data'
+        self.experiment_dir = os.path.join('experiments', experiment_name)
         if not os.path.exists(self.experiment_dir):
             os.makedirs(self.experiment_dir)
         self.img_save_path = os.path.join(self.experiment_dir, 'img')
@@ -258,7 +258,7 @@ class Relgan():
 
     def train(self):
         print("load index")
-        imgIndex = np.load("RelGAN/imgIndex.npy", allow_pickle=True)
+        imgIndex = np.load("RelGAN/imgIndex_train.npy", allow_pickle=True)
         imgAttr = np.load("RelGAN/anno_dic.npy", allow_pickle=True).item()
         print("training")
 

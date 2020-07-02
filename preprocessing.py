@@ -4,7 +4,7 @@
 # 4.0 International License. To view a copy of this license, visit
 # http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to
 # Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
-
+import random
 import numpy as np
 
 import argparse
@@ -43,18 +43,27 @@ for i in range(2, len(annos)):
         temp2.append(temp[ii])
     annosAry[anno[0]] = temp2
 
+print(len(annosAry))
 print(annosAry["000001.jpg"])
 print(len(annosAry["000001.jpg"]))
 
 np.save(args.output, annosAry)
 
-img_list = open('image_list.txt').readlines()
-imgIndex = [None]*len(img_list)
+# celeba_mask_list = open('CelebAMask-HQ-attribute-anno.txt').readlines()[2:]
 
-for i in range(1, len(img_list)):
-    temp = str.split(img_list[i])
-    imgIndex[int(temp[0])] = temp[2]
+random.seed(1234)
 
-print(imgIndex[29999])
+img_list = open('image_list.txt').readlines()[1:]
+random.shuffle(img_list)
+img_list = img_list[2000:]
+imgIndex = []
 
-np.save("imgIndex.npy", imgIndex)
+for i in range(len(img_list)):
+    temp = img_list[i].split()
+    imgIndex.append(temp[2])
+
+# print(imgIndex[29999])
+print(imgIndex[0])  # 10780       115995      115996.jpg
+print(imgIndex[-1])  # 25498       126279      126280.jpg
+
+np.save("train_imgIndex.npy", imgIndex)
