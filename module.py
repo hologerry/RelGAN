@@ -104,11 +104,14 @@ def discriminator(imgA, imgB, attr, size, att_size):
         y2 = convs[i](y2)
         y2 = LeakyReLU(alpha=0.01)(y2)
 
+    # adv
     d_out1 = Conv2D(1, 1, padding='same', kernel_initializer='lecun_normal', kernel_regularizer=regular)(y2)
 
+    # interp
     d_out3 = Conv2D(64, 1, padding='same', kernel_initializer='lecun_normal', kernel_regularizer=regular)(y2)
     d_out3 = Lambda(lambda x: K.mean(x, axis=[-1]))(d_out3)
 
+    # match
     d_out2 = Concatenate()([y1, y2, Lambda(tileAttr2)(attr)])
     d_out2 = Conv2D(2048, 1, strides=1, kernel_initializer='lecun_normal', kernel_regularizer=regular)(d_out2)
     d_out2 = LeakyReLU(alpha=0.01)(d_out2)  # 2 2 2048

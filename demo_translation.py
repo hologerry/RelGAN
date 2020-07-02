@@ -142,7 +142,7 @@ def testPic(img, gender, bangs=-1, glasses=1):
 # version = int(sys.argv[2])
 # if version==-1:
 #     version = len(os.listdir('img'))-2
-version = 519
+version = 51
 
 print(version)
 
@@ -184,30 +184,30 @@ relGan = Model(inputs=[imgA_input, vec_input_pos], outputs=g_out)
 relGan.load_weights(train_path)
 relGan.summary()
 
-lengh = 20
+lengh = 10
 temp = [None]*lengh
-celeba_test_imgs = open('celeba_test_img_list.txt', 'r').readlines()
-for i in range(lengh):
-    if i >= 10:
-        gls = -1
-    else:
-        gls = 1
-    temp[i] = testPic('test_img/' + celeba_test_imgs[i].strip(), i % 2, gls)
+# celeba_test_imgs = open('celeba_test_img_list.txt', 'r').readlines()
+# for i in range(lengh):
+#     if i >= 10:
+#         gls = -1
+#     else:
+#         gls = 1
+#     temp[i] = testPic('test_img/' + celeba_test_imgs[i].strip(), i % 2, gls)
 
-# temp[0] = testPic('test_img/j.png', 0)
-# temp[1] = testPic('test_img/c.2.jpg', 0)
-# temp[2] = testPic('test_img/es.png', 1)
-# temp[3] = testPic('test_img/e.2.png', 1)
-# temp[4] = testPic('test_img/g.2.png', 1)
-# temp[5] = testPic('test_img/y3.png', 1)
-# temp[6] = testPic('test_img/f1.png', 1, glasses=-1)
-# temp[7] = testPic('test_img/j1.png', 0, glasses=-1)
-# temp[8] = testPic('test_img/c3.png', 0)
-# temp[9] = testPic('test_img/g3.png', 1, glasses=-1)
+temp[0] = testPic('test_img/j.png', 0)
+temp[1] = testPic('test_img/c.2.jpg', 0)
+temp[2] = testPic('test_img/es.png', 1)
+temp[3] = testPic('test_img/e.2.png', 1)
+temp[4] = testPic('test_img/g.2.png', 1)
+temp[5] = testPic('test_img/y3.png', 1)
+temp[6] = testPic('test_img/f1.png', 1, glasses=-1)
+temp[7] = testPic('test_img/j1.png', 0, glasses=-1)
+temp[8] = testPic('test_img/c3.png', 0)
+temp[9] = testPic('test_img/g3.png', 1, glasses=-1)
 
 new_im = Image.new('RGB', (256*10, 256*lengh))
 for jj in tqdm(range(lengh)):
     index = jj
     image = temp[index]
     new_im.paste(Image.fromarray(image, "RGB"), (0, 256*jj))
-new_im.save('results/celeba_test_v%04d.jpg' % version)
+new_im.save('results/test_v%04d.jpg' % version)
