@@ -66,4 +66,4 @@ for i in range(len(img_list)):
 print(imgIndex[0])  # 10780       115995      115996.jpg
 print(imgIndex[-1])  # 25498       126279      126280.jpg
 
-np.save("train_imgIndex.npy", imgIndex)
+np.save("imgIndex_train.npy", imgIndex)
