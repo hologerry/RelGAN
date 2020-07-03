@@ -21,8 +21,6 @@ from tensorboardX import SummaryWriter
 
 from module import discriminator, generator
 
-# from ops import
-
 
 class Relgan():
 
@@ -51,7 +49,7 @@ class Relgan():
         self.img_shape = (self.imgSize, self.imgSize, 3)
         self.vec_shape = (self.vecSize,)
 
-        experiment_name = 'original_relgan_mask_data'
+        experiment_name = 'original_relgan_mask_skin_data'
         self.experiment_dir = os.path.join('experiments', experiment_name)
         if not os.path.exists(self.experiment_dir):
             os.makedirs(self.experiment_dir)
@@ -231,20 +229,20 @@ class Relgan():
                                    K.mean(self.di_loss)],
                                   self.d_training_updates)
 
-    def get_imgs_tags(self, indexserX, imgIndex, imgAttr):
+    def get_imgs_tags(self, indexserX, imgIndex, imgAttr=None):
         imgs = [None]*self.batch
         atts = [None]*self.batch
 
         for i in range(self.batch):
             temp_index = indexserX[i]
-            img_fa = imgIndex[temp_index]
+            img_anno = imgIndex[temp_index]
 
-            while img_fa is None:
+            while img_anno is None:
                 temp_index = np.random.choice(len(imgIndex), 1)[0]
-                img_fa = imgIndex[temp_index]
-            atts[i] = imgAttr[img_fa]
+                img_anno = imgIndex[temp_index]
+            atts[i] = img_anno[1:]
 
-            img = io.imread(os.path.join(self.path, img_fa))
+            img = io.imread(os.path.join(self.path, img_anno[0]))
             imgs[i] = img/127.5-1
 
         imgs = np.array(imgs)
@@ -258,8 +256,9 @@ class Relgan():
 
     def train(self):
         print("load index")
-        imgIndex = np.load("RelGAN/imgIndex_train.npy", allow_pickle=True)
-        imgAttr = np.load("RelGAN/anno_dic.npy", allow_pickle=True).item()
+        imgIndex = np.load("relgan_mask_skin_data/imgIndex_train_mask_skin.npy", allow_pickle=True)
+        # imgAttr = np.load("RelGAN_mask_data/anno_dic.npy", allow_pickle=True).item()
+        imgAttr = None
         print("training")
 
         ite = self.step
