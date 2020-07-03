@@ -74,6 +74,7 @@ for i in range(len(img_list)):
             values.append(0.0)
         else:
             values.append(1.0)
+    assert len(values) == len(new_attrs_index)
     one_img_anno = [img, values]
     imgIndex.append(one_img_anno)
 
