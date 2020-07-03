@@ -14,7 +14,7 @@ from keras.backend.tensorflow_backend import set_session
 from relgan import Relgan
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-p", "--path", type=str, default='data/celaba_mask_hq/CelebA-HQ-img', help="data path")
+parser.add_argument("-p", "--path", type=str, default='data/celaba_mask_hq/CelebA-HQ-img-256', help="data path")
 parser.add_argument("-d", "--device", type=str, default='0', help="gpu device")
 parser.add_argument("-g", "--growth", type=bool, default=True, help="allow_growth")
 parser.add_argument("-s", "--step", type=int, default=0, help="train_step")

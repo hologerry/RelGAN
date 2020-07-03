@@ -65,15 +65,17 @@ imgIndex = []
 for i in range(len(img_list)):
     temp = img_list[i].strip().split()
     attribute_values = temp[1:]
-    attr_anno = []
-    attr_anno.append(temp[0])
+    img = []
+    img.append(temp[0])
+    values = []
     for attr_idx in new_attrs_index:
         value = attribute_values[attr_idx]
         if value == '-1':
-            attr_anno.append(0)
+            values.append(0.0)
         else:
-            attr_anno.append(1)
-    imgIndex.append(attr_anno)
+            values.append(1.0)
+    one_img_anno = [img, values]
+    imgIndex.append(one_img_anno)
 
 # print(imgIndex[29999])
 # print(imgIndex[0])  # 10780       115995      115996.jpg

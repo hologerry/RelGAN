@@ -240,7 +240,7 @@ class Relgan():
             while img_anno is None:
                 temp_index = np.random.choice(len(imgIndex), 1)[0]
                 img_anno = imgIndex[temp_index]
-            atts[i] = img_anno[1:]
+            atts[i] = img_anno[1]
 
             img = io.imread(os.path.join(self.path, img_anno[0]))
             imgs[i] = img/127.5-1
