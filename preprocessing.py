@@ -71,9 +71,9 @@ for i in range(len(img_list)):
     for attr_idx in new_attrs_index:
         value = attribute_values[attr_idx]
         if value == '-1':
-            values.append(0.0)
+            values.append(float(0.0))
         else:
-            values.append(1.0)
+            values.append(float(1.0))
     assert len(values) == len(new_attrs_index)
     one_img_anno = [img, values]
     imgIndex.append(one_img_anno)
