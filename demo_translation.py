@@ -139,8 +139,14 @@ def testPic(img, gender, bangs=-1, glasses=1):
     return ans
 
 
-selected_attrs = ['5_o_Clock_Shadow', 'Bald', 'Bangs', 'Black_Hair', 'Blond_Hair', 'Brown_Hair', 'Eyeglasses', 'Goatee',
-                  'Gray_Hair', 'Male', 'Mustache', 'Pale_Skin', 'Smiling', 'Straight_Hair', 'Wavy_Hair', 'Wearing_Hat', 'Young']
+# selected_attrs = ['5_o_Clock_Shadow', 'Bald', 'Bangs', 'Black_Hair', 'Blond_Hair', 'Brown_Hair', 'Eyeglasses', 'Goatee',
+#                   'Gray_Hair', 'Male', 'Mustache', 'Pale_Skin', 'Smiling', 'Straight_Hair', 'Wavy_Hair', 'Wearing_Hat', 'Young']
+selected_attrs = ['Arched_Eyebrows', 'Black_Hair', 'Blond_Hair', 'Brown_Hair', 'Eyeglasses',
+                  'Gray_Hair', 'Heavy_Makeup', 'Male', 'Mouth_Slightly_Open', 'Mustache',
+                  'No_Beard', 'Smiling', 'Young', 'Skin_0', 'Skin_1', 'Skin_2', 'Skin_3']
+
+
+os.makedirs('results_compare_mask_skin', exist_ok=True)
 
 
 def test_one_img_hair(img_path, attr, test_idx=0):
@@ -149,9 +155,12 @@ def test_one_img_hair(img_path, attr, test_idx=0):
     image = image[:, :, :3]
     image = image*2 - 1
     one_image = np.expand_dims(image, axis=0)
-    new_image_batch = np.tile(one_image, [4, 1, 1, 1])  # 4 is hair color numbers
+
     attrs = []
     hair_colors = ['Black_Hair', 'Blond_Hair', 'Brown_Hair', 'Gray_Hair']
+    new_image_batch = np.tile(one_image, [len(hair_colors), 1, 1, 1])
+
+    # hair_colors = hair_colors[::-1]  # RelGAN in reverse order
     hair_color_idxes = []
     for color in hair_colors:
         hair_color_idxes.append(selected_attrs.index(color))
@@ -165,19 +174,54 @@ def test_one_img_hair(img_path, attr, test_idx=0):
         attrs.append(tmp_attr)
     new_attrs = np.concatenate(attrs, axis=0)
     output_hair, _ = relGan.predict([new_image_batch, new_attrs])
-    save_images = np.concatenate([new_image_batch, output_hair], axis=0)
-    width = 1
-    height = 4 + 1
-    new_im = Image.new('RGB', (256*height, 256*width))
-    for h in range(height):
-        for w in range(width):
-            index = h*width+w
-            cur_image = (save_images[index]/2+0.5)*255
-            cur_image = cur_image.astype(np.uint8)
-            new_im.paste(Image.fromarray(cur_image, "RGB"), (256*h, 256*w))
+    save_images = np.concatenate([one_image, output_hair], axis=0)
+    n_imgs = len(hair_colors) + 1
+
+    new_im = Image.new('RGB', (256*n_imgs, 256*1))
+    for idx in range(n_imgs):
+        cur_image = (save_images[idx]/2+0.5)*255
+        cur_image = cur_image.astype(np.uint8)
+        new_im.paste(Image.fromarray(cur_image, "RGB"), (256*idx, 0))
     # ans = np.array(new_im)
     img_name = img_path.split('/')[-1].split('.')[0]
-    new_im.save(f'results_compare/test_hair_v{version:04d}_{test_idx}_{img_name}.jpg')
+    new_im.save(f'results_compare_mask_skin/test_hair_v{version:04d}_{test_idx}_{img_name}.jpg')
+
+
+def test_one_img_skin(img_path, attr, test_idx=0):
+    temp3 = io.imread(img_path)
+    image = transform.resize(temp3, [256, 256])
+    image = image[:, :, :3]
+    image = image*2 - 1
+    one_image = np.expand_dims(image, axis=0)
+
+    attrs = []
+    skin_colors = ['Skin_0', 'Skin_1', 'Skin_2', 'Skin_3']
+    new_image_batch = np.tile(one_image, [len(skin_colors), 1, 1, 1])  # 4 is hair color numbers
+    # skin_colors = skin_colors[::-1]  # RelGAN in reverse order
+    hair_color_idxes = []
+    for color in skin_colors:
+        hair_color_idxes.append(selected_attrs.index(color))
+    for color in skin_colors:
+        tmp_attr = np.zeros([17])
+        for idx in hair_color_idxes:
+            if attr[idx] == 1:
+                tmp_attr[idx] = -1
+        tmp_attr[selected_attrs.index(color)] = 1
+        tmp_attr = np.expand_dims(tmp_attr, axis=0)
+        attrs.append(tmp_attr)
+    new_attrs = np.concatenate(attrs, axis=0)
+    output_hair, _ = relGan.predict([new_image_batch, new_attrs])
+    save_images = np.concatenate([one_image, output_hair], axis=0)
+    n_imgs = len(skin_colors) + 1
+
+    new_im = Image.new('RGB', (256*n_imgs, 256*1))
+    for idx in range(n_imgs):
+        cur_image = (save_images[idx]/2+0.5)*255
+        cur_image = cur_image.astype(np.uint8)
+        new_im.paste(Image.fromarray(cur_image, "RGB"), (256*idx, 0))
+
+    img_name = img_path.split('/')[-1].split('.')[0]
+    new_im.save(f'results_compare_mask_skin/test_skin_v{version:04d}_{test_idx}_{img_name}.jpg')
 
 
 def test_one_img_each_attr(img_path, attr, test_idx=0):
@@ -186,7 +230,8 @@ def test_one_img_each_attr(img_path, attr, test_idx=0):
     image = image[:, :, :3]
     image = image*2 - 1
     one_image = np.expand_dims(image, axis=0)
-    change_attr = ['Eyeglasses', 'Male', 'Mustache', 'Smiling', 'Young']
+    change_attr = ['Arched_Eyebrows', 'Eyeglasses', 'Heavy_Makeup', 'Male', 'Mouth_Slightly_Open', 'Mustache', 'No_Beard', 'Smiling', 'Young']
+    # change_attr = change_attr[::-1]  # RelGAN in reverse order
     new_image_batch = np.tile(one_image, [len(change_attr), 1, 1, 1])  # 4 is hair color numbers
     attrs = []
     for change in change_attr:
@@ -200,26 +245,24 @@ def test_one_img_each_attr(img_path, attr, test_idx=0):
         attrs.append(tmp_attr)
     new_attrs = np.concatenate(attrs, axis=0)
     output_each, _ = relGan.predict([new_image_batch, new_attrs])
-    save_images = np.concatenate([new_image_batch, output_each], axis=0)
-    width = 1
-    height = len(change_attr) + 1
-    new_im = Image.new('RGB', (256*height, 256*width))
-    for h in range(height):
-        for w in range(width):
-            index = h*width+w
-            cur_image = (save_images[index]/2+0.5)*255
-            cur_image = cur_image.astype(np.uint8)
-            new_im.paste(Image.fromarray(cur_image, "RGB"), (256*h, 256*w))
-    # ans = np.array(new_im)
+    save_images = np.concatenate([one_image, output_each], axis=0)
+    n_imgs = len(change_attr) + 1
+
+    new_im = Image.new('RGB', (256*n_imgs, 256*1))
+    for idx in range(n_imgs):
+        cur_image = (save_images[idx]/2+0.5)*255
+        cur_image = cur_image.astype(np.uint8)
+        new_im.paste(Image.fromarray(cur_image, "RGB"), (256*idx, 0))
+
     img_name = img_path.split('/')[-1].split('.')[0]
-    new_im.save(f'results_compare/test_each_attribute_v{version:04d}_{test_idx}_{img_name}.jpg')
+    new_im.save(f'results_compare_mask_skin/test_each_attribute_v{version:04d}_{test_idx}_{img_name}.jpg')
 
 
 # temp3 = io.imread('/share/data/celeba-hq/celeba-256/12345.jpg')
 # version = int(sys.argv[2])
 # if version==-1:
 #     version = len(os.listdir('img'))-2
-version = 519
+version = 700
 
 print(version)
 
@@ -262,13 +305,14 @@ relGan.load_weights(train_path)
 relGan.summary()
 
 
-celeba_test_imgs = open('celeba_test_img_list.txt', 'r').readlines()
+celeba_test_imgs = open('celeba_hq_mask_skin_test_img_list.txt', 'r').readlines()
 lengh = len(celeba_test_imgs)
 temp = [None]*lengh
 for i in range(lengh):
-    img = os.path.join('test_img', 'celeba_test_'+celeba_test_imgs[i].split()[0])
+    img = os.path.join('test_img_mask_skin', celeba_test_imgs[i].split()[0])
     attr = celeba_test_imgs[i].split()[1:]
     test_one_img_hair(img, attr, i)
+    test_one_img_skin(img, attr, i)
     test_one_img_each_attr(img, attr, i)
 
 # temp[0] = testPic('test_img/j.png', 0)

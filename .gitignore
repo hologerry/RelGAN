@@ -103,6 +103,6 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-test_img/
+test_img*/
 results*
 *.h5
